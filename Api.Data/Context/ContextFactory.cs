@@ -1,17 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Data.Context
+namespace Api.Data.Context
 {
     public class ContextFactory : IDesignTimeDbContextFactory<MyContext>
     {
         public MyContext CreateDbContext(string[] args)
         {
-            // Usado para criar as migrações
-            var connectionString = "Server=localhost;Port=3306;Database=dbAPI;Uid=admin;Pwd=@1234,abcd";
+            //Usado para Criar as Migrações
+            var connectionString = "Server=localhost;Port=3306;DataBase=dbAPI;Uid=root;Pwd=@abcd,1234";
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();
             optionsBuilder.UseMySql(connectionString);
             return new MyContext(optionsBuilder.Options);
