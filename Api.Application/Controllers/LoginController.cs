@@ -1,13 +1,12 @@
-﻿using Api.Domain.Entities;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Domain.DTOs;
 using Domain.Interfaces.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Net;
-using System.Threading.Tasks;
 
-namespace application.Controllers
+namespace Api.Application.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
@@ -15,13 +14,21 @@ namespace application.Controllers
 	{
 		[AllowAnonymous]
 		[HttpPost]
-		public async Task<object> Login([FromBody] LoginDTO loginDTO, [FromServices] ILoginService loginService)
+		public async Task<object> Login([FromBody] LoginDTO loginDto,
+										[FromServices] ILoginService service)
 		{
-			if (!ModelState.IsValid) return BadRequest(ModelState);
-			if (loginDTO == null) return BadRequest();
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+			if (loginDto == null)
+			{
+				return BadRequest(ModelState);
+			}
+
 			try
 			{
-				object result = await loginService.FindByLogin(loginDTO);
+				var result = await service.FindByLogin(loginDto);
 				if (result != null)
 				{
 					return Ok(result);
@@ -31,10 +38,11 @@ namespace application.Controllers
 					return NotFound();
 				}
 			}
-			catch(ArgumentException e)
+			catch (ArgumentException e)
 			{
 				return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
 			}
 		}
+
 	}
 }
